@@ -7,9 +7,6 @@ import threading
 import time
 import tkinter as tk
 h1, h2, h3 = "f2", "f8", "f9"
-print(f"Hot key:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
-print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " reverse")
-print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
 
 window = tk.Tk()
 window.title("Save copy v0.1")
