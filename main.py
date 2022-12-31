@@ -55,7 +55,7 @@ def hot_key():
     print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " reverse")
     print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
 
-hot_button = tk.Button(window, text="Hotkey", command=hot_key)
+hot_button = tk.Button(window, text="Hotkeys", command=hot_key)
 hot_button.pack(side="left", padx=10)
 hot_button.configure(bg='white')
 
