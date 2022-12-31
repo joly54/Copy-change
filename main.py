@@ -1,12 +1,16 @@
-import threading
-import pyperclip
-import time
-import tkinter as tk
 from colorama import Fore, Style, init, Back
 import os
+import pyperclip
 import sounddevice as sd
 import soundfile as sf
-print("Use f2 to on/off program and f9 to on/off reverse")
+import threading
+import time
+import tkinter as tk
+h1, h2, h3 = "f2", "f8", "f9"
+print(f"Hot key:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
+print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " reverse")
+print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
+
 window = tk.Tk()
 window.title("Jetiq naeb v0.1")
 window.geometry("270x100")
@@ -39,6 +43,7 @@ def start_calibration():
         pyperclip.copy("")
 calibration_button = tk.Button(window, text="Calibrate", command=start_calibration)
 calibration_button.pack(side="left", padx=10)
+calibration_button.configure(bg='white')
 # Load the MP3 file
 rev_letter_mapping={}
 def calibration(string):
@@ -118,10 +123,10 @@ def change_clipboard_text():
         if up==1 and current_clipboard != previous_clipboard and len(current_clipboard)>0:
             calibration(current_clipboard)
             up=0
-            print("Res of calibration:\n{")
+            print("New dictionary:\n")
             for char in rev_letter_mapping:
                 print(f"\'{Fore.GREEN + char + Style.RESET_ALL}\' : \'{Fore.CYAN + rev_letter_mapping[char] + Style.RESET_ALL}\'")
-            print("}")
+            print()
             calibration_button.configure(bg='white')
             sound("finished")
         elif current_clipboard != previous_clipboard and switch_value.get() and not rswitch_value.get():
@@ -195,9 +200,9 @@ def key_bind():
         global current_clipboard
         if str(key)=="Key.f2":
             switch.invoke()
-        if str(key)=="Key.f9":
-            rswitch.invoke()
         if str(key)=="Key.f8":
+            rswitch.invoke()
+        if str(key)=="Key.f9":
             calibration_button.invoke()
 
     with Listener(on_press=on_press) as listener:
