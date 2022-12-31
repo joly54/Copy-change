@@ -12,8 +12,8 @@ print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RES
 print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
 
 window = tk.Tk()
-window.title("Jetiq naeb v0.1")
-window.geometry("270x100")
+window.title("Save copy v0.1")
+window.geometry("420x100")
 
 window.resizable(False, False)
 window.iconbitmap("files/icon.ico")
@@ -37,6 +37,7 @@ def start_calibration():
         calibration_button.configure(bg='white')
         sound("canceld")
     else:
+        canvas.itemconfigure(canvas.find_withtag("oval"), fill="cyan")
         sound('calibration')
         up=1
         calibration_button.configure(bg='#00BFFF')
@@ -44,6 +45,23 @@ def start_calibration():
 calibration_button = tk.Button(window, text="Calibrate", command=start_calibration)
 calibration_button.pack(side="left", padx=10)
 calibration_button.configure(bg='white')
+
+def clear():
+    os.system('cls')
+
+clear_button = tk.Button(window, text="Clear log", command=clear)
+clear_button.pack(side="left", padx=10)
+clear_button.configure(bg='white')
+
+def hot_key():
+    print(f"Hot key:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
+    print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " reverse")
+    print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
+
+hot_button = tk.Button(window, text="Hotkey", command=hot_key)
+hot_button.pack(side="left", padx=10)
+hot_button.configure(bg='white')
+
 # Load the MP3 file
 rev_letter_mapping={}
 def calibration(string):
@@ -128,12 +146,20 @@ def change_clipboard_text():
                 print(f"\'{Fore.GREEN + char + Style.RESET_ALL}\' : \'{Fore.CYAN + rev_letter_mapping[char] + Style.RESET_ALL}\'")
             print()
             calibration_button.configure(bg='white')
+            if rswitch_value.get() == 1:
+                canvas.itemconfigure(canvas.find_withtag("oval"), fill="yellow")
+            else:
+                if switch_value.get():
+                    canvas.itemconfigure(canvas.find_withtag("oval"), fill="lime")
+                else:
+                    canvas.itemconfigure(canvas.find_withtag("oval"), fill="red")
             sound("finished")
+            pyperclip.copy("")
         elif current_clipboard != previous_clipboard and switch_value.get() and not rswitch_value.get():
             #print(Fore.MAGENTA + f"Old text(Reverse OFF): " + Style.RESET_ALL + f"{current_clipboard}")
-            print(Fore.MAGENTA + f"Old text(Reverse" + Fore.RED + " OFF" + Fore.MAGENTA +"): " + Style.RESET_ALL + f"{current_clipboard}")
+            if len(current_clipboard)>0: print(Fore.MAGENTA + f"Old text(Reverse" + Fore.RED + " OFF" + Fore.MAGENTA +"): " + Style.RESET_ALL + f"{current_clipboard}")
             current_clipboard=current_clipboard.lower()
-            print(Fore.BLUE + f"New text(Reverse" + Fore.RED + " OFF" + Fore.BLUE +"): " + Style.RESET_ALL, end="")
+            if len(current_clipboard)>0: print(Fore.BLUE + f"New text(Reverse" + Fore.RED + " OFF" + Fore.BLUE +"): " + Style.RESET_ALL, end="")
             # Clipboard content has changed, so call the function
             modified_text = modify_clipboard_text(current_clipboard)
             pyperclip.copy(modified_text)
@@ -161,8 +187,11 @@ def update_status():
     global current_clipboard
     pyperclip.copy("")
     if switch_value.get() == 1:
+        if rswitch_value.get() == 1:
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="yellow")
+        else:
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="lime")
         # Change the oval to green
-        canvas.itemconfigure(canvas.find_withtag("oval"), fill="lime")
         print(Fore.GREEN + "Program is On" + Style.RESET_ALL)
         sound("ON")
     else:
@@ -177,13 +206,19 @@ def rev_update_status():
     if rswitch_value.get() == 1:
         print(Back.GREEN + "Reverse is On" + Style.RESET_ALL)
         if switch_value.get() == 0:
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="yellow")
             switch.invoke()
             sound('both')
             pyperclip.copy("")
         else:
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="yellow")
             sound("reverse on")
             pyperclip.copy("")
     else:
+        if switch_value.get():
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="lime")
+        else:
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="red")
         print(Back.RED + "Reverse is Off" + Style.RESET_ALL)
         sound("reverse off")
     pyperclip.copy("")
