@@ -51,7 +51,7 @@ clear_button.pack(side="left", padx=10)
 clear_button.configure(bg='white')
 
 def hot_key():
-    print(f"Hot key:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
+    print(f"Hotkeys:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
     print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " reverse")
     print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
 
