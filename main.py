@@ -10,7 +10,7 @@ h1, h2, h3 = "f2", "f8", "f9"
 
 window = tk.Tk()
 window.title("Save copy v0.1")
-window.geometry("420x100")
+window.geometry("480x100")
 
 window.resizable(False, False)
 window.iconbitmap("files/icon.ico")
@@ -27,12 +27,20 @@ rswitch_value = tk.IntVar()
 rswitch = tk.Checkbutton(window, text="Reverse", variable=rswitch_value)
 rswitch.pack(side="left")
 up=0
+is_audio_on=1
 def start_calibration():
     global up
     if up == 1:
         up=0
         calibration_button.configure(bg='white')
         sound("canceld")
+        if rswitch_value.get() == 1 and switch_value.get():
+            canvas.itemconfigure(canvas.find_withtag("oval"), fill="yellow")
+        else:
+            if switch_value.get():
+                canvas.itemconfigure(canvas.find_withtag("oval"), fill="lime")
+            else:
+                canvas.itemconfigure(canvas.find_withtag("oval"), fill="red")
     else:
         canvas.itemconfigure(canvas.find_withtag("oval"), fill="cyan")
         sound('calibration')
@@ -51,16 +59,38 @@ clear_button.pack(side="left", padx=10)
 clear_button.configure(bg='white')
 
 def hot_key():
-    print(f"Hotkeys:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
+    print(f"Hot key:\n{Fore.YELLOW + h1 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " program")
     print(f"{Fore.YELLOW + h2 + Style.RESET_ALL } =>", Fore.GREEN + "ON" + Style.RESET_ALL + "/" + Fore.RED + "OFF" + Style.RESET_ALL + " reverse")
     print(f"{Fore.YELLOW + h3 + Style.RESET_ALL } =>", Fore.CYAN + "Calibration" + Style.RESET_ALL)
 
-hot_button = tk.Button(window, text="Hotkeys", command=hot_key)
+hot_button = tk.Button(window, text="Hotkey", command=hot_key)
 hot_button.pack(side="left", padx=10)
 hot_button.configure(bg='white')
 
+def audio():
+    global is_audio_on
+    if is_audio_on:
+        is_audio_on=0
+        audio_btn.configure(bg='red')
+    else:
+        is_audio_on=1
+        audio_btn.configure(bg='lime')
+
+audio_btn = tk.Button(window, text="Audio", command=audio)
+audio_btn.pack(side="left", padx=10)
+audio_btn.configure(bg='lime')
+
 # Load the MP3 file
-rev_letter_mapping={}
+rev_letter_mapping = {
+        'а' : 'a',
+        'с' : 'c',
+        'е' : 'e',
+        'і' : 'i',
+        'о' : 'o',
+        'р' : 'p',
+        'х' : 'x',
+        'у' : 'y',
+    }
 def calibration(string):
     global rev_letter_mapping
     rev_letter_mapping.clear()
@@ -82,8 +112,9 @@ def calibration(string):
             # If it is, add the mapping to the new dictionary
             rev_letter_mapping[letter_mapping[char]] = char
 def sound(name):
-    data, fs = sf.read("files/" + name + ".mp3")
-    sd.play(data, fs)
+    if is_audio_on:
+        data, fs = sf.read("files/" + name + ".mp3")
+        sd.play(data, fs)
 def modify_clipboard_text(text):
     # Create a dictionary mapping English letters to Russian letters
     letter_mapping = {
