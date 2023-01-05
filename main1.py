@@ -10,7 +10,7 @@ import tkinter as tk
 h1, h2, h3 = "f2", "f8", "f9"
 init()
 window = tk.Tk()
-window.title("Save copy v0.11")
+window.title("Save copy v0.12")
 window.geometry("480x100")
 
 window.resizable(False, False)
