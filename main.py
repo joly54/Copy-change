@@ -1,4 +1,4 @@
-from colorama import Fore, Style, init, Back
+from colorama import Fore, Style, init, Back, init
 import os
 import pyperclip
 import sounddevice as sd
@@ -7,7 +7,7 @@ import threading
 import time
 import tkinter as tk
 h1, h2, h3 = "f2", "f8", "f9"
-
+init()
 window = tk.Tk()
 window.title("Save copy v0.1")
 window.geometry("480x100")
@@ -111,10 +111,14 @@ def calibration(string):
         if char in letter_mapping:
             # If it is, add the mapping to the new dictionary
             rev_letter_mapping[letter_mapping[char]] = char
+    if not rswitch_value.get():
+        rswitch.invoke()
+def play_sound(name):
+    data, fs = sf.read("files/" + name + ".mp3")
+    sd.play(data, fs)
 def sound(name):
     if is_audio_on:
-        data, fs = sf.read("files/" + name + ".mp3")
-        sd.play(data, fs)
+        (threading.Thread(target=play_sound, args=(name,))).start()
 def modify_clipboard_text(text):
     # Create a dictionary mapping English letters to Russian letters
     letter_mapping = {
@@ -185,7 +189,7 @@ def change_clipboard_text():
             pyperclip.copy("")
         elif current_clipboard != previous_clipboard and switch_value.get() and not rswitch_value.get():
             #print(Fore.MAGENTA + f"Old text(Reverse OFF): " + Style.RESET_ALL + f"{current_clipboard}")
-            if len(current_clipboard)>0: print(Fore.MAGENTA + f"Old text(Reverse" + Fore.RED + " OFF" + Fore.MAGENTA +"): " + Style.RESET_ALL + f"{current_clipboard}")
+            #if len(current_clipboard)>0: print(Fore.MAGENTA + f"Old text(Reverse" + Fore.RED + " OFF" + Fore.MAGENTA +"): " + Style.RESET_ALL + f"{current_clipboard}")
             current_clipboard=current_clipboard.lower()
             if len(current_clipboard)>0: print(Fore.BLUE + f"New text(Reverse" + Fore.RED + " OFF" + Fore.BLUE +"): " + Style.RESET_ALL, end="")
             # Clipboard content has changed, so call the function
@@ -194,7 +198,7 @@ def change_clipboard_text():
             previous_clipboard = modified_text
             print("\n")
         elif current_clipboard != previous_clipboard and switch_value.get():
-            if len(current_clipboard)>0: print(Fore.MAGENTA + f"Old text(Reverse" + Fore.GREEN + " ON" + Fore.MAGENTA +"): " + Style.RESET_ALL + f"{current_clipboard}")
+            #if len(current_clipboard)>0: print(Fore.MAGENTA + f"Old text(Reverse" + Fore.GREEN + " ON" + Fore.MAGENTA +"): " + Style.RESET_ALL + f"{current_clipboard}")
             current_clipboard=current_clipboard.lower()
             if len(current_clipboard)>0: print(Fore.BLUE + f"New text(Reverse" + Fore.GREEN + " ON" + Fore.BLUE +"): " + Style.RESET_ALL, end="")
             # Clipboard content has changed, so call the function
