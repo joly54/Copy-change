@@ -1,4 +1,5 @@
 from colorama import Fore, Style, init, Back, init
+import easygui
 import os
 import pyperclip
 import sounddevice as sd
@@ -30,6 +31,7 @@ rswitch.pack(side="left")
 up = 0
 is_audio_on = 1
 
+line_sound=[]
 
 def start_calibration():
     global up
@@ -124,6 +126,7 @@ rev_letter_mapping = {
     "р": "p",
     "х": "x",
     "у": "y",
+    "н": "h" 
 }
 
 
@@ -140,6 +143,7 @@ def calibration(string):
         "p": "р",
         "x": "х",
         "y": "у",
+        "h" :"н"
     }
     # Iterate over the string
     for char in string:
@@ -152,20 +156,21 @@ def calibration(string):
 is_audio_plaing = 0
 
 
-def play_sound(name):
+def play_sound():
     global is_audio_plaing
-    is_audio_plaing = 1
-    data, fs = sf.read("files/" + name + ".mp3")
-    sd.play(data, fs)
-    is_audio_plaing = 0
+    while True:
+        if len(line_sound):
+            sd.stop()
+            data, fs = sf.read("files/" + line_sound.pop() + ".mp3")
+            sd.play(data, fs)
+            line_sound.clear()
+        time.sleep(0.1)
 
-
+(threading.Thread(target=play_sound)).start()
 def sound(name):
     if is_audio_on:
-        while is_audio_plaing:
-            sd.stop()
-        (threading.Thread(target=play_sound, args=(name,))).start()
-
+        line_sound.append(name)
+        #play_sound(name)
 
 def modify_clipboard_text(text):
     # Create a dictionary mapping English letters to Russian letters
@@ -178,6 +183,7 @@ def modify_clipboard_text(text):
         "p": "р",
         "x": "х",
         "y": "у",
+        "h" :"н"
     }
 
     # Initialize an empty result string
@@ -188,7 +194,7 @@ def modify_clipboard_text(text):
         # If the character is an English letter, replace it with the corresponding Russian letter
         if char.lower() in letter_mapping:
             result += letter_mapping[char.lower()]
-            print(f"{Fore.CYAN + char + Style.RESET_ALL}", end="")
+            print(f"{Fore.CYAN + letter_mapping[char.lower()] + Style.RESET_ALL}", end="")
         # Otherwise, just append the character to the result string as is
         else:
             result += char
@@ -207,7 +213,7 @@ def reverse_modify_clipboard_text(text):
         # If the character is an English letter, replace it with the corresponding Russian letter
         if char.lower() in rev_letter_mapping:
             result += rev_letter_mapping[char.lower()]
-            print(f"{Fore.CYAN + char + Style.RESET_ALL}", end="")
+            print(f"{Fore.CYAN + rev_letter_mapping[char.lower()] + Style.RESET_ALL}", end="")
         # Otherwise, just append the character to the result string as is
         else:
             result += char
